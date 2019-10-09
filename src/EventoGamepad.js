@@ -51,9 +51,11 @@ function actualizarOrdenes(){
         if ( botonesPulsados[2] == false ) {
             botonesPulsados[2] = true
             controles.disparo = true;
+            controles.continuar = true;
         }
     } else {
         botonesPulsados[2] = false
         controles.disparo = false;
+        controles.continuar = false;
     }
 }
