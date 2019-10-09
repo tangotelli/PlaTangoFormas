@@ -2,6 +2,8 @@ class GameLayer extends Layer {
 
     constructor() {
         super();
+        this.mensaje = new Boton(imagenes.mensaje_como_jugar, 480/2, 320/2);
+        this.pausa = true;
         this.iniciar();
     }
 
@@ -31,6 +33,9 @@ class GameLayer extends Layer {
     }
 
     actualizar (){
+        if (this.pausa)
+            return;
+
         if (this.jugador.y > 320) {
             this.iniciar();
         }
@@ -102,6 +107,8 @@ class GameLayer extends Layer {
             if (nivelActual > nivelMax){
                 nivelActual = 0;
             }
+            this.pausa = true;
+            this.mensaje = new Boton(imagenes.mensaje_ganar, 480/2, 320/2);
             this.iniciar();
         }
 
@@ -139,16 +146,25 @@ class GameLayer extends Layer {
         this.fondoPuntos.dibujar();
         this.puntos.dibujar();
 
-        if (entrada == entradas.pulsaciones) {
+        if (!this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
             this.botonSalto.dibujar();
             this.pad.dibujar();
         }
 
+        if ( this.pausa ) {
+            this.mensaje.dibujar();
+        }
     }
 
 
     procesarControles( ){
+        // pausa
+        if(controles.continuar){
+            controles.continuar = true;
+            this.pausa = false;
+        }
+
         // disparar
         if (  controles.disparo ){
             var nuevoDisparo = this.jugador.disparar();
@@ -232,8 +248,13 @@ class GameLayer extends Layer {
         this.botonDisparo.pulsado = false;
         this.botonSalto.pulsado = false;
         controles.moverX = 0;
+        controles.continuar = false;
 
         for(var i=0; i < pulsaciones.length; i++){
+            if(pulsaciones[i].tipo == tipoPulsacion.inicio){
+                controles.continuar = true;
+            }
+
             if (this.pad.contienePunto(pulsaciones[i].x , pulsaciones[i].y) ){
                 var orientacionX = this.pad.obtenerOrientacionX(pulsaciones[i].x);
                 if ( orientacionX > 20) { // de 0 a 20 no contabilizamos
