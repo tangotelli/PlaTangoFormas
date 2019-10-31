@@ -22,6 +22,8 @@ class GameLayer extends Layer {
 
         this.enemigos = [];
 
+        this.recolectables = [];
+
         this.fondoPuntos =
             new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
 
@@ -112,6 +114,14 @@ class GameLayer extends Layer {
             this.iniciar();
         }
 
+        // recolectable
+        for (var j=0; j < this.recolectables.length; j++){
+            if (this.recolectables[j] != null && this.recolectables[j].colisiona((this.jugador))){
+                this.recolectables.splice(j, 1);
+                this.puntos.valor *= 2;
+                j = j-1;
+            }
+        }
     }
 
     calcularScroll() {
@@ -141,6 +151,9 @@ class GameLayer extends Layer {
             this.enemigos[i].dibujar(this.scrollX);
         }
         this.copa.dibujar(this.scrollX);
+        for (var i=0; i < this.recolectables.length; i++){
+            this.recolectables[i].dibujar(this.scrollX);
+        }
         this.jugador.dibujar(this.scrollX);
 
         this.fondoPuntos.dibujar();
@@ -239,6 +252,12 @@ class GameLayer extends Layer {
                 this.copa = new Copa(x, y);
                 this.copa.y = this.copa.y - this.copa.alto/2;
                 this.espacio.agregarDinamicos(this.copa);
+                break;
+            case "R":
+                const recolectable = new Recolectable(x, y);
+                recolectable.y = recolectable.y - recolectable.alto/2;
+                this.recolectables.push(recolectable)
+                this.espacio.agregarDinamicos(recolectable);
                 break;
         }
     }
