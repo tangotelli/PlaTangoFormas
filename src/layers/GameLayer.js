@@ -127,7 +127,6 @@ class GameLayer extends Layer {
                 this.nRecolectables.valor--;
             }
         }
-
     }
 
     calcularScroll() {
@@ -157,6 +156,9 @@ class GameLayer extends Layer {
             this.enemigos[i].dibujar(this.scrollX);
         }
         this.copa.dibujar(this.scrollX);
+        for (var i=0; i < this.recolectables.length; i++){
+            this.recolectables[i].dibujar(this.scrollX);
+        }
         this.jugador.dibujar(this.scrollX);
         for (i=0; i < this.recolectables.length; i++) {
             this.recolectables[i].dibujar(this.scrollX);
@@ -263,8 +265,7 @@ class GameLayer extends Layer {
                 const recolectable = new Recolectable(x, y);
                 recolectable.y = recolectable.y - recolectable.alto/2;
                 this.recolectables.push(recolectable);
-                this.nRecolectables.valor++;
-                this.espacio.agregarDinamicos(recolectable);
+                this.nRecolectables.valor++;this.espacio.agregarDinamicos(recolectable);
                 break;
         }
     }

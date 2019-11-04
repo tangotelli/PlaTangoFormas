@@ -2,7 +2,7 @@ class Recolectable extends Modelo {
 
     constructor(x, y) {
         super(imagenes.icono_recolectable, x, y);
-        this.aRecolectable = new Animacion(imagenes.recolectable, this.ancho, this.alto, 6, 8)
+        this.aRecolectable = new Animacion(imagenes.recolectable, this.ancho, this.alto, 6, 8);
         this.animacion = this.aRecolectable;
     }
 
@@ -10,7 +10,7 @@ class Recolectable extends Modelo {
         this.animacion.actualizar();
     }
 
-    dibujar (scrollX = 0){
+    dibujar(scrollX = 0) {
         this.animacion.dibujar(this.x - scrollX, this.y);
     }
 }
