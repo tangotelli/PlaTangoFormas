@@ -20,6 +20,8 @@ class GameLayer extends Layer {
 
         this.bloques = [];
 
+        this.bloquesSalto = [];
+
         this.enemigos = [];
 
         this.recolectables = [];
@@ -146,6 +148,13 @@ class GameLayer extends Layer {
                 this.jugador.y = destinoY;
             }
         }
+
+        //Plataformas de salto
+        for (i=0; i < this.bloquesSalto.length; i++) {
+            if (this.bloquesSalto[i] != null & this.jugador.colisiona(this.bloquesSalto[i])) {
+                this.jugador.vSalto = -22;
+            }
+        }
     }
 
     calcularScroll() {
@@ -166,6 +175,9 @@ class GameLayer extends Layer {
         this.calcularScroll();
         for (let i=0; i < this.bloques.length; i++) {
             this.bloques[i].dibujar(this.scrollX);
+        }
+        for (i = 0; i < this.bloquesSalto.length; i++) {
+            this.bloquesSalto[i].dibujar(this.scrollX);
         }
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].dibujar(this.scrollX);
@@ -316,6 +328,12 @@ class GameLayer extends Layer {
                 break;
             case "9":
                 this.procesarPuerta(x, y, 9);
+                break;
+            case "Y":
+                const bloqueSalto = new BloqueSalto(x, y);
+                bloqueSalto.y = bloqueSalto.y - bloqueSalto.alto/2;
+                this.bloquesSalto.push(bloqueSalto);
+                this.espacio.agregarEstaticos(bloqueSalto);
                 break;
         }
     }

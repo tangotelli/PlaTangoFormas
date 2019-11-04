@@ -4,6 +4,7 @@ class Jugador extends Modelo {
         super(imagenes.jugador , x, y)
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
+        this.vSalto = -16;
         this.orientacion = orientaciones.derecha;
         this.estado = estados.moviendo;
 
@@ -92,6 +93,7 @@ class Jugador extends Modelo {
                 }
                 break;
         }
+        this.vSalto = -16;
     }
 
     dibujar (scrollX = 0){
@@ -129,7 +131,7 @@ class Jugador extends Modelo {
 
     saltar() {
         if(!this.enElAire) {
-            this.vy = -16;
+            this.vy = this.vSalto;
             this.enElAire = true;
         }
     }
