@@ -24,6 +24,8 @@ class GameLayer extends Layer {
 
         this.recolectables = [];
 
+        this.puertas = [];
+
         this.fondoPuntos = new Fondo(imagenes.icono_puntos, 480*0.85,320*0.07);
         this.puntos = new Texto(0,480*0.9,320*0.09 );
 
@@ -34,6 +36,7 @@ class GameLayer extends Layer {
         this.disparosJugador = [];
 
         this.cargarMapa("res/" + nivelActual + ".txt");
+        this.validarPuertas();
     }
 
     actualizar (){
@@ -127,6 +130,22 @@ class GameLayer extends Layer {
                 this.nRecolectables.valor--;
             }
         }
+
+        // puertas
+        for (j=0; j < this.puertas.length; j++){
+            if ( this.puertas[j] != null &&
+                this.jugador.colisiona(this.puertas[j]) ) {
+                var destinoX = this.puertas[j].pareja.x;
+                var destinoY = this.puertas[j].pareja.y;
+                this.puertas[j].pareja.desemparejar();
+                this.espacio.eliminarDinamicos(this.puertas[j]);
+                this.puertas.splice(j, 1);
+                j = j-1;
+                this.validarPuertas();
+                this.jugador.x = destinoX;
+                this.jugador.y = destinoY;
+            }
+        }
     }
 
     calcularScroll() {
@@ -162,6 +181,9 @@ class GameLayer extends Layer {
         this.jugador.dibujar(this.scrollX);
         for (i=0; i < this.recolectables.length; i++) {
             this.recolectables[i].dibujar(this.scrollX);
+        }
+        for (i=0; i < this.puertas.length; i++) {
+            this.puertas[i].dibujar(this.scrollX);
         }
         this.fondoPuntos.dibujar();
         this.puntos.dibujar();
@@ -245,7 +267,7 @@ class GameLayer extends Layer {
                 this.bloques.push(bloque);
                 this.espacio.agregarEstaticos(bloque);
                 break;
-            case "1":
+            case "J":
                 this.jugador = new Jugador(x, y);
                 this.jugador.y = this.jugador.y - this.jugador.alto / 2;
                 this.espacio.agregarDinamicos(this.jugador);
@@ -265,8 +287,60 @@ class GameLayer extends Layer {
                 const recolectable = new Recolectable(x, y);
                 recolectable.y = recolectable.y - recolectable.alto/2;
                 this.recolectables.push(recolectable);
-                this.nRecolectables.valor++;this.espacio.agregarDinamicos(recolectable);
+                this.nRecolectables.valor++;
+                this.espacio.agregarDinamicos(recolectable);
                 break;
+            case "1":
+                this.procesarPuerta(x, y, 1);
+                break;
+            case "2":
+                this.procesarPuerta(x, y, 2);
+                break;
+            case "3":
+                this.procesarPuerta(x, y, 3);
+                break;
+            case "4":
+                this.procesarPuerta(x, y, 4);
+                break;
+            case "5":
+                this.procesarPuerta(x, y, 5);
+                break;
+            case "6":
+                this.procesarPuerta(x, y, 6);
+                break;
+            case "7":
+                this.procesarPuerta(x, y, 7);
+                break;
+            case "8":
+                this.procesarPuerta(x, y, 8);
+                break;
+            case "9":
+                this.procesarPuerta(x, y, 9);
+                break;
+        }
+    }
+
+    procesarPuerta(x, y, id) {
+        var puerta = new Puerta(x, y, id);
+        puerta.y = puerta.y - puerta.alto/2;
+        for (var i=0; i < this.puertas.length; i++) {
+            if (this.puertas[i] != null && this.puertas[i].idPuerta == id && this.puertas[i].pareja == null) {
+                this.puertas[i].emparejar(puerta);
+                break;
+            }
+        }
+        this.puertas.push(puerta);
+        this.espacio.agregarDinamicos(puerta);
+    }
+
+    validarPuertas()
+    {
+        for (var i=0; i < this.puertas.length; i++) {
+            if (this.puertas[i] != null && this.puertas[i].pareja == null) {
+                this.espacio.eliminarDinamicos(this.puertas[i]);
+                this.puertas.splice(i, 1);
+                i = i - 1;
+            }
         }
     }
 

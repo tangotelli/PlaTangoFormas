@@ -7,7 +7,7 @@ var imagenes = {
     disparo_jugador : "res/disparo_jugador2.png",
     disparo_enemigo : "res/disparo_enemigo.png",
     icono_puntos : "res/icono_puntos.png",
-    icono_vidas : "res/icono_vidas.png",
+    icono_portal : "res/icono_portal.png",
     icono_recolectable : "res/icono_recolectable.png",
     fondo_2 : "res/fondo_2.png",
     jugador_idle_derecha : "res/jugador_idle_derecha.png",
