@@ -22,12 +22,16 @@ class GameLayer extends Layer {
 
         this.enemigos = [];
 
-        this.fondoPuntos =
-            new Fondo(imagenes.icono_puntos, 480*0.85,320*0.05);
+        this.recolectables = [];
 
+        this.fondoPuntos = new Fondo(imagenes.icono_puntos, 480*0.85,320*0.07);
+        this.puntos = new Texto(0,480*0.9,320*0.09 );
 
-        this.disparosJugador = []
-        this.puntos = new Texto(0,480*0.9,320*0.07 );
+        this.fondoRecolectables = new Fondo(imagenes.icono_recolectable, 480*0.1, 320*0.07);
+        var n = this.recolectables.length;
+        this.nRecolectables = new Texto(n, 480*0.15, 320*0.09);
+
+        this.disparosJugador = [];
 
         this.cargarMapa("res/" + nivelActual + ".txt");
     }
@@ -86,7 +90,6 @@ class GameLayer extends Layer {
                     this.disparosJugador.splice(i, 1);
                     i = i-1;
                     this.enemigos[j].impactado();
-                    this.puntos.valor++;
                 }
             }
         }
@@ -98,6 +101,7 @@ class GameLayer extends Layer {
                 this.espacio.eliminarDinamicos(this.enemigos[j]);
                 this.enemigos.splice(j, 1);
                 j = j-1;
+                this.puntos.valor++;
             }
         }
 
@@ -110,6 +114,18 @@ class GameLayer extends Layer {
             this.pausa = true;
             this.mensaje = new Boton(imagenes.mensaje_ganar, 480/2, 320/2);
             this.iniciar();
+        }
+
+        // recolectables
+        for (j=0; j < this.recolectables.length; j++){
+            if ( this.recolectables[j] != null &&
+                this.jugador.colisiona(this.recolectables[j]) ) {
+                this.espacio.eliminarDinamicos(this.recolectables[j]);
+                this.recolectables.splice(j, 1);
+                j = j-1;
+                this.puntos.valor *= 2;
+                this.nRecolectables.valor--;
+            }
         }
 
     }
@@ -142,10 +158,13 @@ class GameLayer extends Layer {
         }
         this.copa.dibujar(this.scrollX);
         this.jugador.dibujar(this.scrollX);
-
+        for (i=0; i < this.recolectables.length; i++) {
+            this.recolectables[i].dibujar(this.scrollX);
+        }
         this.fondoPuntos.dibujar();
         this.puntos.dibujar();
-
+        this.fondoRecolectables.dibujar();
+        this.nRecolectables.dibujar();
         if (!this.pausa && entrada == entradas.pulsaciones) {
             this.botonDisparo.dibujar();
             this.botonSalto.dibujar();
@@ -239,6 +258,13 @@ class GameLayer extends Layer {
                 this.copa = new Copa(x, y);
                 this.copa.y = this.copa.y - this.copa.alto/2;
                 this.espacio.agregarDinamicos(this.copa);
+                break;
+            case "R":
+                const recolectable = new Recolectable(x, y);
+                recolectable.y = recolectable.y - recolectable.alto/2;
+                this.recolectables.push(recolectable);
+                this.nRecolectables.valor++;
+                this.espacio.agregarDinamicos(recolectable);
                 break;
         }
     }
