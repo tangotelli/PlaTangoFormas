@@ -15,6 +15,7 @@ class GameLayer extends Layer {
         this.espacio = new Espacio(1);
 
         this.scrollX = 0;
+        this.scrollY = 0;
 
         this.fondo = new Fondo(imagenes.fondo_2,480*0.5,320*0.5);
 
@@ -157,7 +158,7 @@ class GameLayer extends Layer {
         }
     }
 
-    calcularScroll() {
+    calcularScrollX() {
         if (this.jugador.x > 480*0.3) {
             if (this.jugador.x - this.scrollX < 480*0.3) {
                 this.scrollX = this.jugador.x - 480*0.3;
@@ -170,32 +171,42 @@ class GameLayer extends Layer {
         }
     }
 
+    calcularScrollY() {
+        if (this.jugador.y - this.scrollY < 320*0.15) {
+            this.scrollY = this.jugador.y - 320*0.15;
+        }
+        if (this.jugador.y - this.scrollY > 320*0.85) {
+            this.scrollY = this.jugador.y - 320*0.85;
+        }
+    }
+
     dibujar (){
         this.fondo.dibujar();
-        this.calcularScroll();
+        this.calcularScrollX();
+        this.calcularScrollY();
         for (let i=0; i < this.bloques.length; i++) {
-            this.bloques[i].dibujar(this.scrollX);
+            this.bloques[i].dibujar(this.scrollX, this.scrollY);
         }
         for (i = 0; i < this.bloquesSalto.length; i++) {
-            this.bloquesSalto[i].dibujar(this.scrollX);
+            this.bloquesSalto[i].dibujar(this.scrollX, this.scrollY);
         }
         for (var i=0; i < this.disparosJugador.length; i++) {
-            this.disparosJugador[i].dibujar(this.scrollX);
+            this.disparosJugador[i].dibujar(this.scrollX, this.scrollY);
         }
 
         for (var i=0; i < this.enemigos.length; i++){
-            this.enemigos[i].dibujar(this.scrollX);
+            this.enemigos[i].dibujar(this.scrollX, this.scrollY);
         }
-        this.copa.dibujar(this.scrollX);
+        this.copa.dibujar(this.scrollX, this.scrollY);
         for (var i=0; i < this.recolectables.length; i++){
-            this.recolectables[i].dibujar(this.scrollX);
+            this.recolectables[i].dibujar(this.scrollX, this.scrollY);
         }
-        this.jugador.dibujar(this.scrollX);
+        this.jugador.dibujar(this.scrollX, this.scrollY);
         for (i=0; i < this.recolectables.length; i++) {
-            this.recolectables[i].dibujar(this.scrollX);
+            this.recolectables[i].dibujar(this.scrollX, this.scrollY);
         }
         for (i=0; i < this.puertas.length; i++) {
-            this.puertas[i].dibujar(this.scrollX);
+            this.puertas[i].dibujar(this.scrollX, this.scrollY);
         }
         this.fondoPuntos.dibujar();
         this.puntos.dibujar();
@@ -257,6 +268,7 @@ class GameLayer extends Layer {
             let texto = fichero.responseText;
             let lineas = texto.split("\n");
             this.anchoMapa = (lineas[0].length - 1) * 40
+            this.altoMapa = (lineas.length - 1) * 32;
             for (let i = 0; i < lineas.length; i++) {
                 let l = lineas[i];
                 for (let j = 0; j < l.length; j++) {
