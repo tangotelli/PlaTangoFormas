@@ -23,6 +23,8 @@ class GameLayer extends Layer {
 
         this.bloquesSalto = [];
 
+        this.bloquesMoviles = [];
+
         this.enemigos = [];
 
         this.recolectables = [];
@@ -156,6 +158,25 @@ class GameLayer extends Layer {
                 this.jugador.vSalto = -22;
             }
         }
+
+        //Bloques moviles
+        for (i=0; i < this.bloquesMoviles.length; i++) {
+            for (j=0; j < this.bloques.length; j++) {
+                if (this.bloquesMoviles[i].colisiona(this.bloques[j])) {
+                    this.bloquesMoviles[i].vx *= -1;
+                }
+            }
+            for (j=0; j < this.bloquesSalto.length; j++) {
+                if (this.bloquesMoviles[i].colisiona(this.bloquesSalto[j])) {
+                    this.bloquesMoviles[i].vx *= -1;
+                }
+            }
+            for (j=0; j < this.bloquesMoviles.length; j++) {
+                if (this.bloquesMoviles[i].colisiona(this.bloquesMoviles[j]) && i != j) {
+                    this.bloquesMoviles[i].vx *= -1;
+                }
+            }
+        }
     }
 
     calcularScrollX() {
@@ -189,6 +210,9 @@ class GameLayer extends Layer {
         }
         for (i = 0; i < this.bloquesSalto.length; i++) {
             this.bloquesSalto[i].dibujar(this.scrollX, this.scrollY);
+        }
+        for (i = 0; i < this.bloquesMoviles.length; i++) {
+            this.bloquesMoviles[i].dibujar(this.scrollX, this.scrollY);
         }
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].dibujar(this.scrollX, this.scrollY);
@@ -346,6 +370,13 @@ class GameLayer extends Layer {
                 bloqueSalto.y = bloqueSalto.y - bloqueSalto.alto/2;
                 this.bloquesSalto.push(bloqueSalto);
                 this.espacio.agregarEstaticos(bloqueSalto);
+                break;
+            case "X":
+                const bloqueMovil = new BloqueMovil(x, y);
+                bloqueMovil.y = bloqueMovil.y - bloqueMovil.alto/2;
+                this.bloquesMoviles.push(bloqueMovil);
+                this.espacio.agregarDinamicos(bloqueMovil);
+                this.espacio.agregarDinamicosChoque(bloqueMovil);
                 break;
         }
     }
